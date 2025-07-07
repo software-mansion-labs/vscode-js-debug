@@ -60,7 +60,7 @@ export class ExecutionContext {
   /** Script ID paused in after WASM is initialized, from {@link breakOnWasmInit} */
   public breakOnWasmScriptId?: string;
 
-  constructor(public readonly description: Cdp.Runtime.ExecutionContextDescription) {}
+  constructor(public readonly description: Cdp.Runtime.ExecutionContextDescription) { }
 
   get isDefault(): boolean {
     return this.description.auxData && this.description.auxData['isDefault'];
@@ -100,7 +100,7 @@ export type RawLocation = {
 class DeferredContainer<T> {
   private _dapDeferred: IDeferred<T> = getDeferred();
 
-  constructor(private readonly _obj: T) {}
+  constructor(private readonly _obj: T) { }
 
   resolve(): void {
     this._dapDeferred.resolve(this._obj);
@@ -122,8 +122,7 @@ const sourcesEqual = (a: Dap.Source, b: Dap.Source) =>
   && urlUtils.comparePathsWithoutCasing(a.path || '', b.path || '');
 
 const getReplSourceSuffix = () =>
-  `\n//# sourceURL=eval-${
-    randomBytes(4).toString('hex')
+  `\n//# sourceURL=eval-${randomBytes(4).toString('hex')
   }${sourceUtils.SourceConstants.ReplExtension}\n`;
 
 /** Auxillary data present in Cdp.Debugger.Paused events in recent Chrome versions */
@@ -1140,7 +1139,7 @@ export class Thread implements IVariableStoreLocationProvider {
       case StepDirection.Over:
         return this.stepOver();
       default:
-        // continue
+      // continue
     }
 
     this._waitingForStepIn = undefined;
@@ -1747,6 +1746,14 @@ export class Thread implements IVariableStoreLocationProvider {
     executionContext.scripts.push(script);
 
     this._sourceContainer.addScriptById(script);
+
+    script.source.then(async _ => {
+      for (const breakpoints of this._breakpointManager.appliedByPath.values()) {
+        for (const bp of breakpoints) {
+          await bp.enable(this);
+        }
+      }
+    });
 
     if (event.sourceMapURL || event.scriptLanguage === 'WebAssembly') {
       // If we won't pause before executing this script, still try to load source

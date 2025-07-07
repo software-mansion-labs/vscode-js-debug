@@ -615,8 +615,8 @@ export class BreakpointManager {
       return {
         breakpoints: (params.breakpoints ?? []).map((_, i) => ({
           id: ids[i],
-          verified: false,
-          message: 'Unbound breakpoint (source modified)',
+          verified: true,
+          message: 'Breakpoint set in a modified source',
         })),
       };
     }

@@ -610,17 +610,6 @@ export class BreakpointManager {
       return { breakpoints: [] };
     }
 
-    // If source is modified, return fake breakpoints, but don't enable/disable in runtime
-    if (params.sourceModified) {
-      return {
-        breakpoints: (params.breakpoints ?? []).map((_, i) => ({
-          id: ids[i],
-          verified: true,
-          message: 'Breakpoint set in a modified source',
-        })),
-      };
-    }
-
     // Ignore no-op breakpoint sets. These can come in from VS Code at the start
     // of the session (if a file only has disabled breakpoints) and make it look
     // like the user had removed all breakpoints they previously set, causing
@@ -637,6 +626,17 @@ export class BreakpointManager {
         return b.disable();
       }),
     );
+
+    // If source is modified, return fake breakpoints, but don't enable/disable in runtime
+    if (params.sourceModified) {
+      return {
+        breakpoints: (params.breakpoints ?? []).map((_, i) => ({
+          id: ids[i],
+          verified: false,
+          message: 'Breakpoint set in a modified source',
+        })),
+      };
+    }
 
     this._totalBreakpointsCount += result.new.length;
 

@@ -1751,6 +1751,7 @@ export class Thread implements IVariableStoreLocationProvider {
       for (const breakpoints of this._breakpointManager.appliedByPath.values()) {
         for (const bp of breakpoints) {
           await bp.enable(this);
+          await this._breakpointManager.notifyBreakpointChange(bp, true);
         }
       }
     });

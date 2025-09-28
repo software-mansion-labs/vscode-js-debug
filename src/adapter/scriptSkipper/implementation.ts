@@ -281,6 +281,7 @@ export class ScriptSkipper implements IScriptSkipper, IDisposable {
     // this._initializeSkippingValueForSource(source);
   }
 
+  // @ts-ignore
   private _initializeSkippingValueForSource(source: Source, scripts = source.scripts) {
     const url = source.url;
     let skipped = this.isScriptSkipped(url);

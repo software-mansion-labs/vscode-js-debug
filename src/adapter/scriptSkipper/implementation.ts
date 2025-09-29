@@ -263,9 +263,25 @@ export class ScriptSkipper implements IScriptSkipper, IDisposable {
   }
 
   public initializeSkippingValueForSource(source: Source) {
-    this._initializeSkippingValueForSource(source);
+    // this is a workaround for a general sloweness of the skipping logic, in a lot of
+    // setups we want to for example exclude whole node_modules directories. The way
+    // file skipper works, is that it looks up generated source file ranges that match
+    // the pattern. For node_modules this ends up being a lot of ranges that need to be
+    // excluded. For the found ranges, it then calls Debugger.setBlackboxedRanges, which
+    // a) are not supported by hermes and even if they were, the sheer volume of ranges
+    // just makes the initialization process take too much time.
+    // Despite this being commented out, the whole skipping mechanism still works correctly.
+    // The reason is that the debugger still implements a fallback mechanism when the debugger
+    // may pause on skipped files. This is needed, as setting blackboxed ranges is async and
+    // so it needs to handle the case where ranges are set only after the debugger has paused.
+    // To read more about thie mechanism check comment in exceptionPauseService.ts before
+    // shouldScriptSkip method.
+    // Beside that, the skipping mechanism is also used for filtering console log stack traces,
+    // in which case it doesn't rely on blackboxed ranges at all.
+    // this._initializeSkippingValueForSource(source);
   }
 
+  // @ts-ignore
   private _initializeSkippingValueForSource(source: Source, scripts = source.scripts) {
     const url = source.url;
     let skipped = this.isScriptSkipped(url);

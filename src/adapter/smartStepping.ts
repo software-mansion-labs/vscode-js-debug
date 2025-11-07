@@ -42,7 +42,7 @@ export async function shouldStepOverStackFrame(
 
 const neverStepReasons: ReadonlySet<PausedReason> = new Set(['breakpoint', 'exception', 'entry']);
 
-const smartStepBackoutThreshold = 256;
+const smartStepBackoutThreshold = 1;
 
 /**
  * The SmartStepper is a device that controls stepping through code that lacks

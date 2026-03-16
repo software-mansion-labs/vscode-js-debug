@@ -35,8 +35,13 @@ export class WebSocketTransport implements ITransport {
     while (true) {
       const dontRetryBefore = Date.now() + maxRetryInterval;
       try {
+        const parsedUrl = new URL(url);
+        const httpScheme = parsedUrl.protocol === 'wss:' ? 'https' : 'http';
         const options = {
-          headers: { host: remoteHostHeader ?? 'localhost' },
+          headers: {
+            host: remoteHostHeader ?? 'localhost',
+            Origin: `${httpScheme}://${parsedUrl.host}`,
+          },
           perMessageDeflate: false,
           maxPayload: 256 * 1024 * 1024, // 256Mb
           rejectUnauthorized: !(isSecure && targetAddressIsLoopback),

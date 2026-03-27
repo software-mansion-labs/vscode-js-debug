@@ -50,6 +50,12 @@ export interface IWatchdogInfo {
   remoteHostHeader?: string;
 
   /**
+   * If true, skips sending the Origin header when connecting to the inspector WebSocket.
+   * Some runtimes (e.g. Expo Go) close the connection when an unexpected Origin header is present.
+   */
+  skipOriginHeader?: boolean;
+
+  /**
    * Address on the debugging server to attach to.
    */
   ipcAddress: string;
@@ -201,6 +207,7 @@ export class WatchDog implements IDisposable {
       this.info.inspectorURL,
       this.cts.token,
       this.info.remoteHostHeader,
+      this.info.skipOriginHeader,
     );
     target.onMessage(([data]) => this.server.send(data));
     target.onEnd(() => {

@@ -90,6 +90,7 @@ export class NodeAttacher extends NodeAttacherBase<INodeAttachConfiguration> {
         scriptName: 'Remote Process',
         inspectorURL,
         remoteHostHeader: runData.params.remoteHostHeader,
+        skipOriginHeader: runData.params.skipOriginHeader,
         waitForDebugger: true,
         dynamicAttach: true,
       });

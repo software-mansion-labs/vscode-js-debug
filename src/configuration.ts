@@ -551,6 +551,12 @@ export interface INodeAttachConfiguration extends INodeBaseConfiguration {
   remoteHostHeader?: string;
 
   /**
+   * If true, skips sending the Origin header when connecting to the inspector WebSocket.
+   * Some runtimes (e.g. Expo Go) close the connection when an unexpected Origin header is present.
+   */
+  skipOriginHeader?: boolean;
+
+  /**
    * TCP/IP address of process to be debugged. Default is 'localhost'.
    */
   address: string;

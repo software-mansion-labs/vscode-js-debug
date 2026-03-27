@@ -598,8 +598,8 @@ export class BreakpointManager {
       params.source.sourceReference
         ? this._byRef.get(params.source.sourceReference)
         : params.source.path
-        ? this._byPath.get(params.source.path)
-        : undefined;
+          ? this._byPath.get(params.source.path)
+          : undefined;
 
     const result = mergeInto(getCurrent() ?? []);
     if (params.source.sourceReference) {
@@ -626,6 +626,17 @@ export class BreakpointManager {
         return b.disable();
       }),
     );
+
+    // If source is modified, return fake breakpoints, but don't enable/disable in runtime
+    if (params.sourceModified) {
+      return {
+        breakpoints: (params.breakpoints ?? []).map((_, i) => ({
+          id: ids[i],
+          verified: false,
+          message: 'Breakpoint set in a modified source',
+        })),
+      };
+    }
 
     this._totalBreakpointsCount += result.new.length;
 

@@ -28,6 +28,6 @@
   "editor.formatOnSave": true,
   "typescript.tsserver.experimental.enableProjectDiagnostics": true,
   "[typescript]": {
-    "editor.defaultFormatter": "dprint.dprint"
+    "editor.defaultFormatter": "vscode.typescript-language-features"
   }
 }
